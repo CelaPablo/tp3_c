@@ -214,7 +214,7 @@ int main(int arg, char *args[]) {
 
         int fRespuesta = open(args[3], O_WRONLY);
 
-        write(fRespuesta, salida, sizeof(salida));
+        write(fRespuesta, salida, strlen(salida));
 
         close(fRespuesta);
     }
