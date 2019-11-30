@@ -16,6 +16,7 @@
 #include <sys/stat.h>
 #include <string.h>
 
+#define MAX_BUFFER 1024
 
 int validarPathFifo(char *path) {
     char finalPath[strlen(path)];
@@ -32,10 +33,9 @@ int validarPathFifo(char *path) {
     if (stat(finalPath, &myFile) < 0) {
         printf("\n El directorio %s no existe \n", finalPath);
         return 1;
-    } else {
-        return 0;
     }
 
+    return 0;
 }
 
 void validarParametros(int arg, char *args[]) {
@@ -57,15 +57,16 @@ void validarParametros(int arg, char *args[]) {
       printf("\nLOS NOMBRES DE LOS FIFOS DEBEN SER DISTINTOS.\n" );
       exit(1);
     }
+    return;
 }
 
 void mostrarAyuda(){
-    printf("\n Ejemplo de ejecucion:\n");
-    printf("\n Primero crear el demonio\n");
+    printf("Ejemplo de ejecucion:\n");
+    printf("Primero crear el demonio\n");
     printf("\t ./ejercicio3  ./articulos.txt ./fifoConsulta ./fifoResultado");
     printf("\n Para realizar consultas segun ID - PRODUCTO - MARCA \n");
-    printf("\t ./consultar producto=P.DULCE ./fifoConsulta");
-    return ;
+    printf("\t ./consultar producto=P.DULCE ./fifoConsulta\n");
+    return;
 }
 
 void agregarSalida(char out[], char id[], char articulo[], char producto[], char marca[]) {
@@ -88,18 +89,19 @@ int obtenerCantidadDeRegistros(char *path[]) {
     FILE *pf;
     int cantfilas = 0;
     pf = fopen(*path, "r");
-    if (!pf) {
-        printf("no se encuentra el archivo");
-        exit(0);
+    if(!pf) {
+      printf("no se encuentra el archivo");
+      exit(0);
     }
+
     char fila[100];
     while (!feof(pf)) {
-        fscanf(pf, " %[^\n]", fila);
-        cantfilas++;
+      fscanf(pf, " %[^\n]", fila);
+      cantfilas++;
     }
+
     fclose(pf);
     return cantfilas;
-
 }
 
 void filtrarArchivo(char *path[], char *filtro, int registros, char *salida) {
@@ -108,21 +110,19 @@ void filtrarArchivo(char *path[], char *filtro, int registros, char *salida) {
     int esProducto = strncmp("PRODUCTO", filtro, 8);
     int esMarca = strncmp("MARCA", filtro, 5);
     int agregados = 0;
-
     char id[100];
     char articulo[100];
-
     char producto[100];
     char marca[100];
     char *igual = strchr(filtro, '=');
     char *buscado = igual;
 
-    strcpy(salida, " ");
+    strcpy(salida, "\0");
     buscado++;
 
     pf = fopen(*path, "r");
     if (!pf) {
-        printf("\n No se  encontro el archivo %s\n", *path);
+        printf("\nNo se  encontro el archivo %s\n", *path);
         exit(0);
     }
 
@@ -174,30 +174,28 @@ int main(int arg, char *args[]) {
 
     validarParametros(arg, args);
 
+    char *fifo1 = args[2];
+    char *fifo2 = args[3];
     // crear demonio
     int pid = fork();
-    if(pid > 0)
-        exit(0);
+    if(pid > 0) {
+      printf("kill %d\n", pid);
+      exit(0);
+    }
 
     // crear fifos
-    mkfifo(args[2], 0666); //fifo consulta
-    mkfifo(args[3], 0666); //fifo resultado
+    mkfifo(fifo1, 0666); //fifo consulta
+    mkfifo(fifo2, 0666); //fifo resultado
 
     //si es el hijo se queda ejecutando
     while (1) {
         // abrir fifos
-        FILE * log;
-        log = fopen("./logs.txt", "w");
-        fprintf(log, "Inicio\n");
-
-        int fConsulta = open(args[2], O_RDONLY);
-        int fRespuesta = open(args[3], O_WRONLY);
-
+        int fConsulta = open(fifo1, O_RDONLY);
         char filtro[100];
         int bytes = -1;
-        bytes = read(fConsulta, filtro, sizeof(filtro)); // leer fifo
 
-        fprintf(log, "%s\n", filtro);
+        bytes = read(fConsulta, filtro, sizeof(filtro)); // leer fifo
+        close(fConsulta);
 
         int cantCaracteres = strlen(filtro);
         char *aMayuscula = filtro;
@@ -210,15 +208,15 @@ int main(int arg, char *args[]) {
 
         int registros = obtenerCantidadDeRegistros(&args[1]);
 
-        char salida[registros * 40];
+        char salida[registros];
 
         filtrarArchivo(&args[1], filtro, registros, salida);
 
-        write(fRespuesta, salida, sizeof(salida) + 1);
+        int fRespuesta = open(args[3], O_WRONLY);
 
-        fclose(log);
+        write(fRespuesta, salida, sizeof(salida));
+
         close(fRespuesta);
-        close(fConsulta);
     }
 
     return (0);

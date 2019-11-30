@@ -14,13 +14,10 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <string.h>
-#include <unistd.h>
-
 
 int validarParametros(int arg, char *args[]) {
-    if (arg != 4) {
+    if (arg != 3)
         return 1;
-    }
 
     struct stat myFile;
 
@@ -56,10 +53,8 @@ int main(int arg, char *args[]) {
         return 1;
     }
 
-    int fd = open(args[2], O_WRONLY);
+    int fd = open(args[2], O_WRONLY | O_TRUNC | O_CREAT);
     write(fd, args[1], cantCaracteres + 1);
-    
-    sleep(5);
 
     return 0;
 }
