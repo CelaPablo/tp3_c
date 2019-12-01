@@ -94,7 +94,7 @@ int filtrarArchivo(char *path, char *filtro, int registros, char *salida) {
     char marca[100];
     char *igual = strchr(filtro, '=');
     char *buscado = igual;
-    
+
     if(!strchr(filtro, '=')){
         return 1;
     }
@@ -145,11 +145,11 @@ int obtenerPuerto(){
 
 void* atender_cliente(void *info){
     int num = ((t_info*)info)->num_cliente;
-    char path[50]; 
+    char path[50];
     strcpy(path,(char *)info);
     char *buffer = malloc(1000);
     while (1) {
-        
+
 		int bytesRecibidos = recv(cliente[num], buffer, 1000, 0);
 		if (bytesRecibidos <= 0) {
 			continue;
@@ -162,7 +162,7 @@ void* atender_cliente(void *info){
         }
         int registros = obtenerCantidadDeRegistros(path);
         char salida[registros * 40];
-            
+
         int res = filtrarArchivo(path, buffer, registros, salida);
         if(res == 1){
             strcpy(salida,"No se encontraron resultados.");
@@ -181,20 +181,20 @@ void* atender_cliente(void *info){
 
 int main(int arg,char *args[]) {
 	pid_t server_demonio;
-    if (arg == 2 && (strcmp(args[1], "-h") == 0 || strcmp(args[1], "-?") == 0 || strcmp(args[1], "-help") == 0)) {            
+    if (arg == 2 && (strcmp(args[1], "-h") == 0 || strcmp(args[1], "-?") == 0 || strcmp(args[1], "-help") == 0)) {
         mostrarAyuda();
         return 0;
     }
-    
+
 	struct sockaddr_in direccionServidor;
 	direccionServidor.sin_family = AF_INET;
 	direccionServidor.sin_addr.s_addr = INADDR_ANY;
 	direccionServidor.sin_port = htons(obtenerPuerto());
-    
+
     server_demonio = fork();
     if(server_demonio > 0)
         exit(0);
-    
+
 	int servidor = socket(AF_INET, SOCK_STREAM, 0);
 	int activado = 1;
 	setsockopt(servidor, SOL_SOCKET, SO_REUSEADDR, &activado, sizeof(activado));
@@ -202,12 +202,12 @@ int main(int arg,char *args[]) {
 		perror("Falló el bind");
 		return 1;
 	}
-    
+
 	listen(servidor, SOMAXCONN);
 	pthread_t hilo;
     int i = 0;
     t_info info[10];
-    
+
 	struct sockaddr_in direccionCliente;
 	unsigned int tamanioDireccion;
     while(1){
@@ -218,14 +218,7 @@ int main(int arg,char *args[]) {
         printf("Bienvenido cliente\n");
         i++;
     }
-    
+
     //despues del accept se crea el hilos
-	
-
-	
-
-
-
-
 	return 0;
 }

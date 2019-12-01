@@ -1,11 +1,11 @@
-/*********************************** 
+/***********************************
 Trabajo práctico N3 ejercicio 1
 Script: ejercicio1.c
 Integrantes:
 Cabral, David           39757782
 Cela, Pablo             36166857
 Pessolani, Agustin	    39670584
-Zabala, Gaston          34614948 
+Zabala, Gaston          34614948
 ***********************************/
 #include <stdio.h>
 #include <sys/types.h>
@@ -33,7 +33,7 @@ int main(int argc, char *argv[]){
         printf("Ingreso demasiados parámetros.\n");
         exit(2);
     }
-    
+
 
     printf("PID: %d PPID: %d Parentesco-Tipo: Padre\n",getpid(),getppid());
     for(i = 0; i < 2; i++){
@@ -56,7 +56,7 @@ int main(int argc, char *argv[]){
                                     while (1){
                                         pause();
                                         exit(0);
-                                    }   
+                                    }
                                 }
                             }
                         }
@@ -107,7 +107,7 @@ int main(int argc, char *argv[]){
             }
             else
                 kill(pid_nieto[2],SIGKILL);
-            exit(2);    
+            exit(2);
         }
     }
     getchar();
@@ -120,9 +120,10 @@ int main(int argc, char *argv[]){
 void ayuda(char *argv[]){
     if(strcmp(argv[1],"-h") == 0 || strcmp(argv[1],"-?") == 0 || strcmp(argv[1],"-help") == 0){
         printf("El programa se encarga de crear una jerarquía familiar:\n");
-        printf("1 padre, 2 hijos, 3 nietos y 5 bisnietos\n.Además cada padre solo puede tener 2 hijos como máximo.\n");
+        printf("\t* 1 padre, 2 hijos, 3 nietos y 5 bisnietos.\nAdemás cada padre solo puede tener 2 hijos como máximo.\n");
         printf("Dos procesos serán zombies y 3 serán demonios.\n");
         printf("No recibe ningún parámetro.\n");
+        printf("\t ejemplo de ejecución: ./ejercicio1\n");
         exit(1);
     }
 }

@@ -16,8 +16,6 @@
 #include <sys/stat.h>
 #include <string.h>
 
-#define MAX_BUFFER 1024
-
 int validarPathFifo(char *path) {
     char finalPath[strlen(path)];
     char *barra = strrchr(path, '/');
@@ -40,7 +38,7 @@ int validarPathFifo(char *path) {
 
 void validarParametros(int arg, char *args[]) {
     if (arg != 4) {
-        printf("\n CANTIDAD DE PARAMETROS INCORRECTOS,VERIFIQUE LA AYUDA ( ./ejercicio3 -h )\n");
+        printf("CANTIDAD DE PARAMETROS INCORRECTOS,VERIFIQUE LA AYUDA ( ./ejercicio3 -h )\n");
         exit(1);
     }
 
@@ -61,12 +59,13 @@ void validarParametros(int arg, char *args[]) {
 }
 
 void mostrarAyuda(){
-    printf("Ejemplo de ejecucion:\n");
-    printf("Primero crear el demonio\n");
-    printf("\t ./ejercicio3  ./articulos.txt ./fifoConsulta ./fifoResultado");
-    printf("\n Para realizar consultas segun ID - PRODUCTO - MARCA \n");
-    printf("\t ./consultar producto=P.DULCE ./fifoConsulta\n");
-    return;
+  printf("Ejemplo de ejecucion:\n");
+  printf("Primero crear el demonio\n");
+  printf("\t ./ejercicio3 ./articulos.txt ./fifoConsulta ./fifoResultado");
+  printf("\n Para realizar consultas segun ID - PRODUCTO - MARCA \n");
+  printf("\t ./consultar producto=P.DULCE ./fifoConsulta\n");
+  printf("Para visualizar la salida usar: cat ./fifoResultado\n");
+  exit(0);
 }
 
 void agregarSalida(char out[], char id[], char articulo[], char producto[], char marca[]) {
@@ -82,7 +81,7 @@ void agregarSalida(char out[], char id[], char articulo[], char producto[], char
 }
 
 void agregarSalidaNula(char out[]) {
-    strcat(out, "\n No se encontraron resultados \n");
+    strcat(out, "No se encontraron resultados.\n");
 }
 
 int obtenerCantidadDeRegistros(char *path[]) {
@@ -90,7 +89,7 @@ int obtenerCantidadDeRegistros(char *path[]) {
     int cantfilas = 0;
     pf = fopen(*path, "r");
     if(!pf) {
-      printf("no se encuentra el archivo");
+      printf("No se encuentra el archivo.\n");
       exit(0);
     }
 
@@ -122,7 +121,7 @@ void filtrarArchivo(char *path[], char *filtro, int registros, char *salida) {
 
     pf = fopen(*path, "r");
     if (!pf) {
-        printf("\nNo se  encontro el archivo %s\n", *path);
+        printf("No se  encontro el archivo %s\n", *path);
         exit(0);
     }
 
@@ -167,10 +166,8 @@ void filtrarArchivo(char *path[], char *filtro, int registros, char *salida) {
 }
 
 int main(int arg, char *args[]) {
-    if (arg == 2 && (strcmp(args[1], "-h") == 0 || strcmp(args[1], "-?") == 0 || strcmp(args[1], "-help") == 0)) {
+    if (arg == 2 && (strcmp(args[1], "-h") == 0 || strcmp(args[1], "-?") == 0 || strcmp(args[1], "-help") == 0))
         mostrarAyuda();
-        return 0;
-    }
 
     validarParametros(arg, args);
 
@@ -207,7 +204,6 @@ int main(int arg, char *args[]) {
         }
 
         int registros = obtenerCantidadDeRegistros(&args[1]);
-
         char salida[registros];
 
         filtrarArchivo(&args[1], filtro, registros, salida);
