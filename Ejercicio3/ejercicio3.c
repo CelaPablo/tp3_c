@@ -170,7 +170,7 @@ int main(int arg, char *args[]) {
         mostrarAyuda();
 
     validarParametros(arg, args);
-
+    char filtro[100];
     char *fifo1 = args[2];
     char *fifo2 = args[3];
     // crear demonio
@@ -183,12 +183,13 @@ int main(int arg, char *args[]) {
     // crear fifos
     mkfifo(fifo1, 0666); //fifo consulta
     mkfifo(fifo2, 0666); //fifo resultado
+        
 
     //si es el hijo se queda ejecutando
     while (1) {
         // abrir fifos
         int fConsulta = open(fifo1, O_RDONLY);
-        char filtro[100];
+        for(int i=0; i<100; i++) { filtro[i] = '\0'; } //NUEVO
         int bytes = -1;
 
         bytes = read(fConsulta, filtro, sizeof(filtro)); // leer fifo
@@ -202,7 +203,9 @@ int main(int arg, char *args[]) {
             *aMayuscula = toupper(*aMayuscula);
             aMayuscula++;
         }
-
+        filtro[cantCaracteres-1] = '\0'; //NUEVO
+        puts(filtro); //NUEVO
+     
         int registros = obtenerCantidadDeRegistros(&args[1]);
         char salida[registros];
 
