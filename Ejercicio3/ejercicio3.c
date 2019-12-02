@@ -63,7 +63,7 @@ void mostrarAyuda(){
   printf("Primero crear el demonio\n");
   printf("\t ./ejercicio3 ./articulos.txt ./fifoConsulta ./fifoResultado");
   printf("\n Para realizar consultas segun ID - PRODUCTO - MARCA \n");
-  printf("\t ./consultar producto=P.DULCE ./fifoConsulta\n");
+  printf("\t echo producto=P.DULCE > ./fifoConsulta\n");
   printf("Para visualizar la salida usar: cat ./fifoResultado\n");
   exit(0);
 }
@@ -82,6 +82,10 @@ void agregarSalida(char out[], char id[], char articulo[], char producto[], char
 
 void agregarSalidaNula(char out[]) {
     strcat(out, "No se encontraron resultados.\n");
+}
+
+void agregarSalidaIncorrecta(char out[]) {
+    strcat(out, "VERIFIQUE LA AYUDA - ./ejercicio3 -h\n");
 }
 
 int obtenerCantidadDeRegistros(char *path[]) {
@@ -118,6 +122,11 @@ void filtrarArchivo(char *path[], char *filtro, int registros, char *salida) {
 
     strcpy(salida, "\0");
     buscado++;
+
+    if(!igual) {
+      agregarSalidaIncorrecta(salida);
+      return;
+    }
 
     pf = fopen(*path, "r");
     if (!pf) {
@@ -183,13 +192,12 @@ int main(int arg, char *args[]) {
     // crear fifos
     mkfifo(fifo1, 0666); //fifo consulta
     mkfifo(fifo2, 0666); //fifo resultado
-        
 
     //si es el hijo se queda ejecutando
     while (1) {
         // abrir fifos
         int fConsulta = open(fifo1, O_RDONLY);
-        for(int i=0; i<100; i++) { filtro[i] = '\0'; } //NUEVO
+        for(int i=0; i<100; i++) { filtro[i] = '\0'; } // limpio filtro
         int bytes = -1;
 
         bytes = read(fConsulta, filtro, sizeof(filtro)); // leer fifo
@@ -203,9 +211,9 @@ int main(int arg, char *args[]) {
             *aMayuscula = toupper(*aMayuscula);
             aMayuscula++;
         }
-        filtro[cantCaracteres-1] = '\0'; //NUEVO
-        puts(filtro); //NUEVO
-     
+
+        filtro[cantCaracteres-1] = '\0';
+
         int registros = obtenerCantidadDeRegistros(&args[1]);
         char salida[registros];
 
