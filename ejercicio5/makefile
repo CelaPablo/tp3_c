@@ -1,14 +1,14 @@
-all: ejercicio5 consultar 
+all: servidor cliente 
 
-ejercicio5:  ejercicio5.o
-	gcc -o ejercicio5 ejercicio5.o 
-ejercicio5.o:  ejercicio5.c
-	gcc -c ejercicio5.c 
+servidor:  servidor.o
+	gcc -o servidor servidor.o -lpthread
+servidor.o:  servidor.c
+	gcc -c servidor.c 
 
-consultar: consultor.o
-	gcc -o consultar consultor.o 
-consultor.o: consultor.c 
-	gcc -c consultor.c 
+cliente: cliente.o
+	gcc -o cliente cliente.o 
+cliente.o: cliente.c 
+	gcc -c cliente.c 
 
 clean:
 	rm *.o
