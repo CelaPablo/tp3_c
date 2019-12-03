@@ -31,6 +31,7 @@ void sig_handler(int signal) {
   sem_unlink(SEM_B);
   sem_unlink(SEM_C);
   sem_unlink(SEM_D);
+  exit(1);
 }
 
 void enviarArchivoFiltrado(char *salida, int siguiente) {
