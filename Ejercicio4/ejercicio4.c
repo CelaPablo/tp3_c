@@ -19,6 +19,8 @@
 #include <semaphore.h>
 #include <sys/mman.h>
 #include "constantes.h"
+//La agregué para poder capturar la señal
+#include<signal.h>
 
 // funcion para eliminar los recursos cuando se hace kill del demonio
 void sig_handler(int signal) {
@@ -216,7 +218,11 @@ void recibirConsulta(char *filtro) {
 }
 
 int main(int arg, char *args[]) {
-    // por las dudas eliminamos todo antes de arrancar
+    //Capturo las señales
+    signal(SIGINT, sig_handler);
+    signal(SIGTERM, sig_handler);
+
+   // por las dudas eliminamos todo antes de arrancar
     shm_unlink(MEM_R);
     sem_unlink(SEM_A);
     sem_unlink(SEM_B);
