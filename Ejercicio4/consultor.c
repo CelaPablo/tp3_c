@@ -33,8 +33,10 @@ void mostrarAyuda(){
   printf("Ejemplo de ejecucion:\n");
   printf("Primero crear el demonio\n");
   printf("\t./ejercicio4 ./articulos.txt\n");
-  printf("Para realizar consultas segun ID - PRODUCTO - MARCA \n");
+  printf("Para realizar consultas segun ID - PRODUCTO - MARCA - ejemplos: \n");
+  printf("\t./consultar id=9717\n");
   printf("\t./consultar producto=P.DULCE\n");
+  printf("\t./consultar marca=GEORGALOS\n");
   exit(1);
 }
 

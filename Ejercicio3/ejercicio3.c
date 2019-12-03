@@ -62,8 +62,10 @@ void mostrarAyuda(){
   printf("Ejemplo de ejecucion:\n");
   printf("Primero crear el demonio\n");
   printf("\t ./ejercicio3 ./articulos.txt ./fifoConsulta ./fifoResultado");
-  printf("\n Para realizar consultas segun ID - PRODUCTO - MARCA \n");
+  printf("\n Para realizar consultas segun ID - PRODUCTO - MARCA - ejemplos:\n");
+  printf("\t echo id=9717 > ./fifoConsulta\n");
   printf("\t echo producto=P.DULCE > ./fifoConsulta\n");
+  printf("\t echo marca=GEORGALOS > ./fifoConsulta\n");
   printf("Para visualizar la salida usar: cat ./fifoResultado\n");
   exit(0);
 }
